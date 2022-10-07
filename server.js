@@ -18,6 +18,7 @@ const tweettasks = require('./tweettaskmodel')
 const retweettasks = require('./retweettaskmodel')
 const walletaddresstasks = require('./walletaddresstaskmodel')
 const telegramtasks = require('./telegramtaskmodel')
+const buytasks = require('./buytaskmodel')
 
 dotenv.config({ path: './config.env' });
 const URI = process.env.URI;
@@ -149,6 +150,19 @@ app.get('/', (req, res) => {
    
   })
 
+  app.post('/fetchbuytaskresponse',async (req,res)=>{
+    const {loggedUserData} = req.body;
+
+    const buyTaskresponse = await buytasks.findOne({
+      loggedUserData: loggedUserData,
+    });
+ 
+
+    res.json(buyTaskresponse)
+
+   
+  })
+
 
 
 
@@ -189,6 +203,27 @@ app.post('/checktweet',(req,res)=>{
   
 })
 
+
+app.post('/savebuystatus',async (req,res)=>{
+ 
+  console.log('savetweettask')
+  console.log(req.body)
+
+  try {
+    const buytask = new buytasks({
+      loggedUserData : req.body.loggedUserData,
+      buy : true,
+    });
+    const savedData = await buytask.save();
+    res.send(savedData);
+
+}catch (err) {
+  console.log(err);
+
+}
+
+
+})
 
 app.post('/savetweettaskstatus',async (req,res)=>{
  
